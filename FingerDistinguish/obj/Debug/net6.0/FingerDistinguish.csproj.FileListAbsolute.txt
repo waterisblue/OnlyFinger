@@ -1,0 +1,17 @@
+E:\C#Test\project\FingerDistinguish\FingerDistinguish\bin\Debug\net6.0\FingerDistinguish.exe
+E:\C#Test\project\FingerDistinguish\FingerDistinguish\bin\Debug\net6.0\FingerDistinguish.deps.json
+E:\C#Test\project\FingerDistinguish\FingerDistinguish\bin\Debug\net6.0\FingerDistinguish.runtimeconfig.json
+E:\C#Test\project\FingerDistinguish\FingerDistinguish\bin\Debug\net6.0\FingerDistinguish.dll
+E:\C#Test\project\FingerDistinguish\FingerDistinguish\bin\Debug\net6.0\FingerDistinguish.pdb
+E:\C#Test\project\FingerDistinguish\FingerDistinguish\obj\Debug\net6.0\FingerDistinguish.csproj.AssemblyReference.cache
+E:\C#Test\project\FingerDistinguish\FingerDistinguish\obj\Debug\net6.0\FingerDistinguish.GeneratedMSBuildEditorConfig.editorconfig
+E:\C#Test\project\FingerDistinguish\FingerDistinguish\obj\Debug\net6.0\FingerDistinguish.AssemblyInfoInputs.cache
+E:\C#Test\project\FingerDistinguish\FingerDistinguish\obj\Debug\net6.0\FingerDistinguish.AssemblyInfo.cs
+E:\C#Test\project\FingerDistinguish\FingerDistinguish\obj\Debug\net6.0\FingerDistinguish.csproj.CoreCompileInputs.cache
+E:\C#Test\project\FingerDistinguish\FingerDistinguish\obj\Debug\net6.0\FingerDistinguish.dll
+E:\C#Test\project\FingerDistinguish\FingerDistinguish\obj\Debug\net6.0\refint\FingerDistinguish.dll
+E:\C#Test\project\FingerDistinguish\FingerDistinguish\obj\Debug\net6.0\FingerDistinguish.pdb
+E:\C#Test\project\FingerDistinguish\FingerDistinguish\obj\Debug\net6.0\FingerDistinguish.genruntimeconfig.cache
+E:\C#Test\project\FingerDistinguish\FingerDistinguish\obj\Debug\net6.0\ref\FingerDistinguish.dll
+E:\C#Test\project\FingerDistinguish\FingerDistinguish\obj\Debug\net6.0\FingerDistinguish.csproj.CopyComplete
+E:\C#Test\project\FingerDistinguish\FingerDistinguish\bin\Debug\net6.0\Interop.ZKFPEngXControl.dll
