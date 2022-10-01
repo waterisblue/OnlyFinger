@@ -1,0 +1,20 @@
+/* 全局样式 */
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+.waterbutton {
+  font-size: 1.35rem;
+  margin-left: 3rem;
+  color: #953250;
+  transition: color 1s;
+}
+.waterbutton:hover {
+  color: #000000;
+  background: #e4dcdc;
+  border-radius: 1rem 0.5rem 0.5rem 0.5rem;
+  box-shadow: 0.5rem grey;
+}
