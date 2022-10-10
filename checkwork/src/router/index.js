@@ -5,23 +5,44 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 
-import Index from '../components/page/Index'
-import TodayCheck from '../components/page/TodayCheck'
-import AnyOneFind from '../components/page/AnyOneFind'
-import AnyOneChart from '../components/page/AnyOneChart'
-import FindByDate from '../components/page/FindByDate'
-import TaskView from '../components/page/TaskView'
+import IndexOld from '../components/page/IndexOld'
+import TodayCheckOld from '../components/page/TodayCheckOld'
+// import AnyOneFind from '../components/page/AnyOneFind'
+// import AnyOneChart from '../components/page/AnyOneChart'
+// import FindByDate from '../components/page/FindByDate'
+// import TaskView from '../components/page/TaskView'
+
+// const routes = [
+//   {
+//     path: '/',
+//     component: Index,
+//     children: [
+//       {path: '/index', component: TodayCheck},
+//       {path: '/anyonefind', component: AnyOneFind},
+//       {path: '/anyonechart', component: AnyOneChart},
+//       {path: '/findbydate', component: FindByDate},
+//       {path: '/taskview', component: TaskView}
+//     ]
+//   }
+// ]
+
+import Index from '../pages/Index'
+import DashBroad from '../pages/DashBroad'
 
 const routes = [
   {
     path: '/',
     component: Index,
     children: [
-      {path: '/index', component: TodayCheck},
-      {path: '/anyonefind', component: AnyOneFind},
-      {path: '/anyonechart', component: AnyOneChart},
-      {path: '/findbydate', component: FindByDate},
-      {path: '/taskview', component: TaskView}
+      {path: "/", component: DashBroad},
+      {path: '/ew', component: TodayCheckOld},
+    ]
+  },
+  {
+    path: '/old',
+    component: IndexOld,
+    children: [
+      {path: '/', component: TodayCheckOld},
     ]
   }
 ]

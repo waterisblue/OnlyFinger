@@ -32,6 +32,48 @@
   </div>
 </template>
 
+<style lang="less" scoped>
+.page {
+  display: flex;
+  flex-direction: column;
+  .dashboard {
+    width: 100%;
+    flex: 5;
+    display: flex;
+    flex-direction: column;
+    .gaugechart {
+      flex: 3;
+      height: 100%;
+    }
+    .count {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      .innertitle {
+        margin: 0rem 1rem;
+        font-size: 1.5rem;
+      }
+    }
+  }
+  .charts {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    width: 100%;
+    flex: 3;
+    .piechart {
+      flex: 1;
+    }
+    .todaytable {
+      width: 60rem;
+      margin-left: 2rem;
+      box-sizing: border-box;
+    }
+  }
+}
+</style>
+
 <script>
 export default {
   name: "TodayCheck",
@@ -62,8 +104,8 @@ export default {
     };
   },
   mounted() {
-    this.getPieChart();
     this.getGaugeChart();
+    this.getPieChart();
   },
   methods: {
     //#region 获取饼图
@@ -171,44 +213,3 @@ export default {
   },
 };
 </script>
-
-<style lang="less" scoped>
-.page {
-  display: flex;
-  flex-direction: column;
-  .dashboard {
-    width: 100%;
-    flex: 5;
-    display: flex;
-    flex-direction: column;
-    .gaugechart {
-      flex: 3;
-    }
-    .count {
-      flex: 1;
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      .innertitle {
-        margin: 0rem 1rem;
-        font-size: 1.5rem;
-      }
-    }
-  }
-  .charts {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    width: 100%;
-    flex: 3;
-    .piechart {
-      flex: 1;
-    }
-    .todaytable {
-      width: 60rem;
-      margin-left: 2rem;
-      box-sizing: border-box;
-    }
-  }
-}
-</style>
