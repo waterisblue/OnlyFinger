@@ -1,10 +1,10 @@
 <template>
   <el-container>
     <el-header>
-        <el-row>
-            <el-col :span="2">标题</el-col>
-            <el-col :span="2" offset="9" class="title">标题</el-col>
-        </el-row>
+      <el-row>
+        <el-col :span="2">标题</el-col>
+        <el-col :span="2" offset="9" class="title">标题</el-col>
+      </el-row>
     </el-header>
     <el-container>
       <el-aside width="200px">
@@ -17,15 +17,22 @@
         >
           <el-submenu index="1">
             <template slot="title"
-              ><i class="el-icon-message"></i>任务可视化</template>
+              ><i class="el-icon-message"></i>任务可视化</template
+            >
             <el-menu-item-group>
-              <el-menu-item index="1-1">仪表盘</el-menu-item>
-              <el-menu-item index="1-2">日期查询</el-menu-item>
+              <el-menu-item index="1-1" @click="saveNavState('/')"
+                >仪表盘</el-menu-item
+              >
+              <el-menu-item index="1-2" @click="saveNavState('/datefind')"
+                >日期查询</el-menu-item
+              >
               <el-menu-item index="1-3">人员细查</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
           <el-submenu index="2">
-            <template slot="title"><i class="el-icon-menu"></i>任务自定义</template>
+            <template slot="title"
+              ><i class="el-icon-menu"></i>任务自定义</template
+            >
             <el-menu-item-group>
               <el-menu-item index="2-1">查询</el-menu-item>
               <el-menu-item index="2-2">其他</el-menu-item>
@@ -53,6 +60,11 @@
 <script>
 export default {
   name: "Index",
+  data() {
+    return {
+      activePath: "/",
+    };
+  },
   methods: {
     handleOpen(key, keyPath) {
       console.log(key, keyPath);
@@ -60,7 +72,10 @@ export default {
     handleClose(key, keyPath) {
       console.log(key, keyPath);
     },
-  },
+    saveNavState(activePath) {
+      this.$router.push(activePath)
+    },
+  }
 };
 </script>
 
@@ -80,7 +95,7 @@ export default {
   color: #333;
   text-align: center;
 }
-.el-main {
-  text-align: center;
+.el-container {
+  height: 100%;
 }
 </style>

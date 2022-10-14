@@ -2,6 +2,27 @@
   <div class="page">
     <div class="upperhalf">
       <div class="gaugechart" ref="gaugechart"></div>
+      <div class="handlemenu">
+
+        <div class="workselect numtext">
+          当前任务：
+          <el-select v-model="value" placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </div>
+        <div class="numtext">当前已参与人数：56</div>
+        <div class="numtext">当前未参与人数：56</div>
+        <div class="numtext">请假人数：56</div>
+      </div>
+      <div class="refreshbtn">
+          <el-button icon="el-icon-refresh" circle class="indexrefresh"></el-button>
+      </div>
     </div>
     <div class="lowerhalf">
       <div class="realtimetable">
@@ -29,9 +50,35 @@
     flex: 4;
     display: flex;
     flex-direction: row;
+    justify-content: space-around;
     height: 100%;
+    align-content: center;
     .gaugechart {
       flex: 1;
+    }
+    .handlemenu {
+      flex: 1;
+      padding: 0;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      text-align: start;
+      .numtext {
+        font-size: 1.2rem;
+      }
+    }
+    
+    @keyframes refreshbtnrotate {
+      from {
+        transform: rotate(0);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    .indexrefresh:hover {
+      animation: refreshbtnrotate 1s linear infinite;
     }
   }
   .lowerhalf {
@@ -40,7 +87,6 @@
     flex-direction: row;
     justify-content: flex-start;
     .realtimetable {
-      // flex: 2;
       width: 50rem;
       box-sizing: border-box;
     }
@@ -93,6 +139,22 @@ export default {
           address: "上海市普陀区金沙江路 1516 弄",
         },
       ],
+      options: [{
+          value: '选项1',
+          label: '黄金糕'
+        }, {
+          value: '选项2',
+          label: '双皮奶'
+        }, {
+          value: '选项3',
+          label: '蚵仔煎'
+        }, {
+          value: '选项4',
+          label: '龙须面'
+        }, {
+          value: '选项5',
+          label: '北京烤鸭'
+        }],
     };
   },
   methods: {
@@ -178,8 +240,8 @@ export default {
               },
               data: [
                 {
-                  value: 50,
-                  name: "比例",
+                  value: 20,
+                  name: "",
                 },
               ],
             },

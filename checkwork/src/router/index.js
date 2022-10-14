@@ -28,6 +28,7 @@ import TodayCheckOld from '../components/page/TodayCheckOld'
 
 import Index from '../pages/Index'
 import DashBroad from '../pages/DashBroad'
+import DateFind from '../pages/DateFind'
 
 const routes = [
   {
@@ -35,7 +36,7 @@ const routes = [
     component: Index,
     children: [
       {path: "/", component: DashBroad},
-      {path: '/ew', component: TodayCheckOld},
+      {path: '/datefind', component: DateFind},
     ]
   },
   {
