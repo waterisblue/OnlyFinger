@@ -7,7 +7,7 @@
       </el-row>
     </el-header>
     <el-container>
-      <el-aside width="200px">
+      <el-aside width="13rem">
         <el-menu
           :default-openeds="['1', '2', '3']"
           background-color="#545c64"
@@ -17,7 +17,7 @@
         >
           <el-submenu index="1">
             <template slot="title"
-              ><i class="el-icon-message"></i>任务可视化</template
+              ><i class="el-icon-message submenumargin"></i>任务可视化</template
             >
             <el-menu-item-group>
               <el-menu-item index="1-1" @click="saveNavState('/')"
@@ -31,7 +31,7 @@
           </el-submenu>
           <el-submenu index="2">
             <template slot="title"
-              ><i class="el-icon-menu"></i>任务自定义</template
+              ><i class="el-icon-menu submenumargin"></i>任务自定义</template
             >
             <el-menu-item-group>
               <el-menu-item index="2-1">查询</el-menu-item>
@@ -40,10 +40,12 @@
           </el-submenu>
           <el-submenu index="3">
             <template slot="title"
-              ><i class="el-icon-setting"></i>人员管理</template
+              ><i class="el-icon-setting submenumargin"></i>人员管理</template
             >
             <el-menu-item-group>
-              <el-menu-item index="3-1">人员查询</el-menu-item>
+              <el-menu-item index="3-1" @click="saveNavState('/peoplefind')"
+                >人员查询</el-menu-item
+              >
               <el-menu-item index="3-2">分组管理</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
@@ -73,9 +75,9 @@ export default {
       console.log(key, keyPath);
     },
     saveNavState(activePath) {
-      this.$router.push(activePath)
+      this.$router.push(activePath);
     },
-  }
+  },
 };
 </script>
 
@@ -91,9 +93,12 @@ export default {
   }
 }
 .el-aside {
-  background-color: #d3dce6;
+  background-color: #788ba1;
   color: #333;
-  text-align: center;
+  text-align: left;
+  .submenumargin {
+    margin-left: -0.5rem
+  }
 }
 .el-container {
   height: 100%;
