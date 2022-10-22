@@ -46,7 +46,7 @@
               <el-menu-item index="3-1" @click="saveNavState('/peoplefind')"
                 >人员查询</el-menu-item
               >
-              <el-menu-item index="3-2">分组管理</el-menu-item>
+              <el-menu-item index="3-2"  @click="saveNavState('/grouphandle')">分组管理</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
         </el-menu>

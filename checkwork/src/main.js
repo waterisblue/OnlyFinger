@@ -11,7 +11,7 @@ import axios from 'axios'
 
 Vue.use(ElementUI)
 Vue.prototype.$http = axios
-axios.defaults.baseURL = "https://localhost:7030"
+axios.defaults.baseURL = "https://localhost:7259"
 
 Vue.prototype.$echarts = echarts
 

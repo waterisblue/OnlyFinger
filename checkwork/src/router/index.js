@@ -30,6 +30,7 @@ import Index from '../pages/Index'
 import DashBroad from '../pages/DashBroad'
 import DateFind from '../pages/DateFind'
 import PeopleFind from '../pages/PeopleFind'
+import GroupHandle from '../pages/GroupHandle'
 
 const routes = [
   {
@@ -38,7 +39,8 @@ const routes = [
     children: [
       {path: "/", component: DashBroad},
       {path: '/datefind', component: DateFind},
-      {path: '/peoplefind', component: PeopleFind}
+      {path: '/peoplefind', component: PeopleFind},
+      {path: '/grouphandle', component: GroupHandle},
     ]
   },
   {

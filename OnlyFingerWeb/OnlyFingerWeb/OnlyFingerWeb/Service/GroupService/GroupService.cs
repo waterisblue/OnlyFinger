@@ -64,13 +64,63 @@ namespace OnlyFingerWeb.Service.GroupService
             return returnCode;
         }
 
-        public ReturnCode<List<GroupEntity>> getGroups()
+        public ReturnCode<List<GroupEntity>> getGroups(int start, int limit)
         {
+            int totalCount = 0;
             ReturnCode<List<GroupEntity>> returnCode = new ReturnCode<List<GroupEntity>>();
-            List<GroupEntity> groupList = Db.Queryable<GroupEntity>().ToList();
+            List<GroupEntity> groupList = Db.Queryable<GroupEntity>().Where(it => it.isDelete == false).ToPageList(start, limit, ref totalCount);
 
             returnCode.code = 200;
-            returnCode.message = groupList;
+            returnCode.message = "查询成功。";
+            returnCode.data = groupList;
+            return returnCode;
+        }
+
+        public ReturnCode<int> getGroupNum()
+        {
+            ReturnCode<int> returnCode = new ReturnCode<int>();
+            int count = Db.Queryable<GroupEntity>().Where(it => it.isDelete == false).Count();
+
+            returnCode.code = 200;
+            returnCode.message = "查询成功。";
+            returnCode.data = count;
+            return returnCode;
+        }
+
+        public ReturnCode<List<GroupEntity>> searchGroup(string searchStr)
+        {
+            var returnCode = new ReturnCode<List<GroupEntity>>();
+            var exp = Expressionable.Create<GroupEntity>();
+
+            if (searchStr == null || searchStr.Equals(""))
+            {
+                returnCode.code = 500;
+                returnCode.message = "查询失败，不能输入空查询字符。";
+                returnCode.data = null;
+                return returnCode;
+            }
+
+            var groupList = new List<GroupEntity> ();
+
+            exp.Or(it => it.groupName.Contains(searchStr));
+            exp.Or(it => it.isDelete == false);
+
+            int parseId;
+
+            bool tryParseBool = int.TryParse(searchStr, out parseId);
+
+
+            if (tryParseBool)
+            {
+                exp.Or(it => it.id == parseId);
+            }
+            groupList = Db.Queryable<GroupEntity>().Where(exp.ToExpression()).ToList();
+
+            
+            returnCode.code = 200;
+            returnCode.message = "查询成功。";
+            returnCode.data = groupList;
+
             return returnCode;
         }
     }

@@ -2,8 +2,7 @@
   <div class="page">
     <div class="upperhalf">
       <div class="gaugechart" ref="gaugechart"></div>
-      <div class="handlemenu">
-
+      <el-card class="handlemenu">
         <div class="workselect numtext">
           当前任务：
           <el-select v-model="value" placeholder="请选择">
@@ -19,7 +18,7 @@
         <div class="numtext">当前已参与人数：56</div>
         <div class="numtext">当前未参与人数：56</div>
         <div class="numtext">请假人数：56</div>
-      </div>
+      </el-card>
       <div class="refreshbtn">
           <el-button icon="el-icon-refresh" circle class="indexrefresh"></el-button>
       </div>
@@ -27,11 +26,11 @@
     <div class="lowerhalf">
       <div class="realtimetable">
         <el-table :data="tableData">
-          <el-table-column prop="date" label="日期" width="180">
+          <el-table-column prop="date" label="时间" width="180">
           </el-table-column>
           <el-table-column prop="name" label="姓名" width="180">
           </el-table-column>
-          <el-table-column prop="address" label="地址"> </el-table-column>
+          <el-table-column prop="task" label="任务"> </el-table-column>
         </el-table>
       </div>
       <div class="realtimechart">
@@ -64,6 +63,9 @@
       flex-direction: column;
       justify-content: space-around;
       text-align: start;
+      line-height: 4rem;
+      padding-left: 7rem;
+      margin-bottom: 2rem;
       .numtext {
         font-size: 1.2rem;
       }
@@ -114,30 +116,31 @@ export default {
       dialogVisible: false,
       tableData: [
         {
-          date: "2016-05-02",
+          date: "2022-05-02 12:32:19",
           name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
+          task: "5月2日 核酸",
         },
         {
-          date: "2016-05-04",
+          date: "2022-05-02 12:32:19",
           name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄",
+          task: "5月2日 核酸",
         },
         {
-          date: "2016-05-04",
+          date: "2022-05-02 12:32:19",
           name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄",
+          task: "5月2日 核酸",
         },
         {
-          date: "2016-05-04",
+          date: "2022-05-02 12:32:19",
           name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄",
+          task: "5月2日 核酸",
         },
         {
-          date: "2016-05-03",
+          date: "2022-05-02 12:32:19",
           name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄",
+          task: "5月2日 核酸",
         },
+        
       ],
       options: [{
           value: '选项1',
@@ -165,7 +168,7 @@ export default {
         const myPieChart = this.$echarts.init(piechart);
         const option = {
           title: {
-            text: "今日XX人数",
+            text: "任务打卡比例",
           },
           tooltip: {
             trigger: "item",
@@ -199,8 +202,6 @@ export default {
                 { value: 1048, name: "签到" },
                 { value: 735, name: "签退" },
                 { value: 580, name: "迟到" },
-                { value: 484, name: "早退" },
-                { value: 300, name: "缺勤" },
               ],
             },
           ],
