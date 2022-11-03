@@ -24,10 +24,17 @@
         <el-table-column prop="groupName" label="组名" width="180">
         </el-table-column>
         <el-table-column prop="memberCount" label="组人数"> </el-table-column>
-        <el-table-column prop="desc" label="组描述"> </el-table-column>
+        <el-table-column
+          prop="desc"
+          :formatter="this.$transform.splitDesc"
+          label="组描述"
+        >
+        </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
+            <el-button
+              size="mini"
+              @click="groupHandleEdit(scope.$index, scope.row)"
               >编辑</el-button
             >
             <el-button
@@ -62,6 +69,25 @@
         <el-form-item>
           <el-button type="primary" @click="addGroup()">立即增加</el-button>
           <el-button @click="changeAddGroupDialog(false)">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+    <!-- 组编辑框 -->
+    <el-dialog title="编辑组" :visible.sync="editGroupFromVisible">
+      <el-form
+        ref="form"
+        :model="editGroupData"
+        label-width="80px"
+        disabled="editGroupInputDisable"
+      >
+        <el-form-item label="组名">
+          <el-input
+            v-model="editGroupData.groupName"
+            placeholder="组名"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="描述">
+          <el-input v-model="editGroupData.desc" placeholder=""></el-input>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -119,10 +145,15 @@ export default {
       isLoadingGroup: true,
       totalPage: 1000,
       addGroupFormVisible: false,
+      editGroupFromVisible: false,
       addGroupData: {
         groupName: "",
         desc: "",
       },
+      pageStatus: "all",
+      searchData: [],
+      editGroupData: {},
+      editGroupInputDisable: true,
     };
   },
   methods: {
@@ -144,23 +175,13 @@ export default {
       return groupCount;
     },
 
-    // 修改dialog状态
+    // 修改增加dialog状态
     changeAddGroupDialog(show) {
       this.addGroupFormVisible = show;
     },
 
     // 根据字符串查询组   DA
     async searchGroup(searchStr) {
-      if (searchStr === "") {
-        this.$notify({
-          title: "错误",
-          message: "查询不可为空",
-          type: "error",
-        });
-        this.isLoadingGroup = false;
-        return;
-      }
-
       let { data: groupList } = await this.$http.post(
         "/group/Group/searchGroup",
         null,
@@ -189,6 +210,12 @@ export default {
         message: res.message,
         type: "success",
       });
+      this.addGroupData.groupName = ""
+      this.addGroupData.desc = ""
+      this.addGroupFormVisible = false
+      this.getGroupCount().then((res) => {
+        this.totalPage = res.data;
+      });
       this.create();
     },
     // 点击查询
@@ -196,19 +223,46 @@ export default {
       if (this.isLoadingGroup) {
         return;
       }
+      if (this.searchStr === "") {
+        this.$notify({
+          title: "错误",
+          message: "查询不可为空",
+          type: "error",
+        });
+        this.isLoadingGroup = false;
+        return;
+      }
       this.isLoadingGroup = true;
       this.searchGroup(this.searchStr).then((res) => {
-        this.groupData = res.data;
+        this.searchData = res.data;
+        this.groupData = res.data.slice(0, 10);
         this.isLoadingGroup = false;
+        this.totalPage = res.data.length;
+        this.pageStatus = "search";
       });
     },
+    // 页码改变调用
     groupSizeChange(currentPage) {
       this.isLoadingGroup = true;
 
-      this.getGroupListByPage(currentPage, 10).then((res) => {
-        this.groupData = res.data;
+      if (this.pageStatus === "all") {
+        this.getGroupListByPage(currentPage, 10).then((res) => {
+          this.groupData = res.data;
+          this.isLoadingGroup = false;
+        });
+      } else if (this.pageStatus === "search") {
+        currentPage = currentPage - 1;
+        this.groupData = this.searchData.slice(
+          currentPage * 10,
+          currentPage * 10 + 10
+        );
         this.isLoadingGroup = false;
-      });
+      }
+    },
+    groupHandleEdit(index, row) {
+      this.editGroupData = row;
+      this.handleIndex = index;
+      this.editGroupFromVisible = true;
     },
   },
 };

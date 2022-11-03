@@ -58,7 +58,10 @@ namespace OnlyFingerWeb.Service.GroupService
         public ReturnCode<string> deleteGroup(int groupId)
         {
             ReturnCode<string> returnCode = new ReturnCode<string>();
-            Db.Deleteable<GroupEntity>().Where(new GroupEntity() { id = groupId }).ExecuteCommand();
+            var res = Db.Updateable<GroupEntity>()
+                .SetColumns(it => it.isDelete == true)
+                .Where(it => it.id == groupId)
+                .ExecuteCommand();
             //TODO: 暂未实现，涉及到联表问题
 
             return returnCode;
@@ -66,8 +69,14 @@ namespace OnlyFingerWeb.Service.GroupService
 
         public ReturnCode<List<GroupEntity>> getGroups(int start, int limit)
         {
-            int totalCount = 0;
             ReturnCode<List<GroupEntity>> returnCode = new ReturnCode<List<GroupEntity>>();
+            if(start >= limit || start < 0 || limit < 0)
+            {
+                returnCode.code = 500;
+                returnCode.message = "页码输入错误";
+                return returnCode;
+            }
+            int totalCount = 0;
             List<GroupEntity> groupList = Db.Queryable<GroupEntity>().Where(it => it.isDelete == false).ToPageList(start, limit, ref totalCount);
 
             returnCode.code = 200;
@@ -103,7 +112,7 @@ namespace OnlyFingerWeb.Service.GroupService
             var groupList = new List<GroupEntity> ();
 
             exp.Or(it => it.groupName.Contains(searchStr));
-            exp.Or(it => it.isDelete == false);
+            exp.And(it => it.isDelete == false);
 
             int parseId;
 

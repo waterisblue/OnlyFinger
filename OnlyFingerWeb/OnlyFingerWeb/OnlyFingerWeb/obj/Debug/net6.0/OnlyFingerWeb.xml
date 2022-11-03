@@ -55,5 +55,24 @@
             <param name="group">任务的组</param>
             <returns></returns>
         </member>
+        <member name="T:OnlyFingerWeb.Controllers.UserController">
+            <summary>
+            用户处理接口
+            </summary>
+        </member>
+        <member name="M:OnlyFingerWeb.Controllers.UserController.getUserByPage(System.Int32,System.Int32)">
+            <summary>
+            分页获取用户
+            </summary>
+            <param name="start">起始页</param>
+            <param name="end">结束页</param>
+            <returns></returns>
+        </member>
+        <member name="M:OnlyFingerWeb.Controllers.UserController.getUserCount">
+            <summary>
+            获取用户数量
+            </summary>
+            <returns></returns>
+        </member>
     </members>
 </doc>

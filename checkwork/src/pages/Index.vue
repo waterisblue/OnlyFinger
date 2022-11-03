@@ -2,8 +2,8 @@
   <el-container>
     <el-header>
       <el-row>
-        <el-col :span="2">标题</el-col>
-        <el-col :span="2" offset="9" class="title">标题</el-col>
+        <el-col :span="2">后台</el-col>
+        <el-col :span="4" offset="8" class="title">自定义任务打卡系统</el-col>
       </el-row>
     </el-header>
     <el-container>
