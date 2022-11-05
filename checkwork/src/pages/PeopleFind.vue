@@ -77,7 +77,7 @@ export default {
   mounted() {
     this.getUserByPage(1, 10).then((res) => {
       this.userData = res.data;
-      this.isLoadingUserTable = false;
+      this.isLoadingUserTable = false;  
     });
     this.getUserCount().then((res) => {
       this.totalPage = res.data;

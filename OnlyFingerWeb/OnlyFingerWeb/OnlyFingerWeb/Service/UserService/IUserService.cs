@@ -9,5 +9,6 @@ namespace OnlyFingerWeb.Service.UserService
         ReturnCode<List<UserEntity>> getUserBySearch(string searchStr);
         // ReturnCode<Dictionary<string, string>> getUserDetailById(int id);
         ReturnCode<int> getUserCount();
+        ReturnCode<UserEntity> getUserById(int userId);
     }
 }

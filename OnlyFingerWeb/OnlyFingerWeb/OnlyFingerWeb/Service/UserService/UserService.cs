@@ -47,5 +47,23 @@ namespace OnlyFingerWeb.Service.UserService
             returnCode.data = count;
             return returnCode;
         }
+
+        public ReturnCode<UserEntity> getUserById(int userId)
+        {
+            ReturnCode<UserEntity> returnCode = new ReturnCode<UserEntity>();
+            List<UserEntity> userEntities = Db.Queryable<UserEntity>()
+                .Where(it => it.id == userId && !it.isDelete)
+                .ToList();
+            if(userEntities.Count != 1)
+            {
+                returnCode.code = 500;
+                returnCode.message = "未查询到该用户";
+                return returnCode;
+            }
+            returnCode.code = 200;
+            returnCode.message = "查询成功";
+            returnCode.data = userEntities.First(); 
+            return returnCode;
+        }
     }
 }

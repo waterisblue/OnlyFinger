@@ -11,5 +11,7 @@ namespace OnlyFingerWeb.Service.GroupService
         public ReturnCode<List<GroupEntity>> getGroups(int start, int limit);
         public ReturnCode<int> getGroupNum();
         public ReturnCode<List<GroupEntity>> searchGroup(string searchStr);
+        public ReturnCode<int> addUser2Group(int userId, int groupId);
+        public ReturnCode<List<Group2UserJoinResult>> getUserByGroupId(int groupId);
     }
 }

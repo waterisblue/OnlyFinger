@@ -19,7 +19,7 @@ namespace OnlyFingerWeb.Service.GroupService
             ReturnCode<string> returnCode = new ReturnCode<string>();
 
             // 获取当前时间戳
-            long timestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
+            long timestamp = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeMilliseconds();
 
             group.createTime = timestamp;
             group.memberCount = 0;
@@ -62,8 +62,15 @@ namespace OnlyFingerWeb.Service.GroupService
                 .SetColumns(it => it.isDelete == true)
                 .Where(it => it.id == groupId)
                 .ExecuteCommand();
-            //TODO: 暂未实现，涉及到联表问题
-
+            if(res != 1)
+            {
+                returnCode.code = 500;
+                returnCode.message = "删除行数不唯一，删除行数：" + res;
+                return returnCode;
+            }
+            returnCode.code = 200;
+            returnCode.message = "删除成功";
+            returnCode.data = 1 + "";
             return returnCode;
         }
 
@@ -130,6 +137,72 @@ namespace OnlyFingerWeb.Service.GroupService
             returnCode.message = "查询成功。";
             returnCode.data = groupList;
 
+            return returnCode;
+        }
+
+        public ReturnCode<int> addUser2Group(int userId, int groupId)
+        {
+            ReturnCode<int> returnCode = new ReturnCode<int> ();
+            long timestamp = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeMilliseconds();
+            // 检查该用户是否已加入组
+            int checkListCount = Db.Queryable<Group2User>().Where(it => it.userid == userId && it.groupid == groupId && it.isDelete == false).Count();
+            if(checkListCount != 0)
+            {
+                returnCode.code = 304;
+                returnCode.message = "用户已加入该组";
+                returnCode.data = checkListCount;
+                return returnCode;
+            }
+
+            var group2UserEntity = new Group2User(groupId, userId, timestamp, false);
+            try
+            {
+               int ret = Db.Insertable(group2UserEntity).IgnoreColumns(it => it.id).ExecuteCommand();
+                // 增加组成员人数
+                int incMember = Db.Updateable<GroupEntity>()
+                .SetColumns(it => it.memberCount == it.memberCount + 1)
+                .Where(it => it.id == groupId)
+                .ExecuteCommand();
+
+                if (ret != 1)
+                {
+                    returnCode.code = 500;
+                    returnCode.message = "插入失败，插入行数不唯一";
+                    returnCode.data = ret;
+                    return returnCode;
+                }
+                
+
+                returnCode.code = 200;
+                returnCode.message = "增加成功";
+                returnCode.data = ret;
+                return returnCode;
+            }
+            // 若外键异常
+            catch (MySql.Data.MySqlClient.MySqlException)
+            {
+                returnCode.code = 304;
+                returnCode.message = "没有该组或用户";
+                returnCode.data = -1;
+                return returnCode;
+            } 
+    
+        }
+
+        public ReturnCode<List<Group2UserJoinResult>> getUserByGroupId(int groupId)
+        {
+            List<Group2UserJoinResult> group2Users = Db.Queryable<Group2User>()
+                .LeftJoin<GroupEntity>((gu, g) => gu.groupid == g.id)
+                .LeftJoin<UserEntity>((gu, g, u) => gu.userid == u.id)
+                .Where((gu, g, u) => gu.groupid == groupId && !gu.isDelete && !g.isDelete && !u.isDelete)
+                .Select((gu, g, u) => 
+                new Group2UserJoinResult { id = gu.id, groupid = g.id, userid = u.id, 
+                    groupname = g.groupName, username = u.username, createtime = gu.createtime, gender = u.gender})
+                .ToList();
+            var returnCode = new ReturnCode<List<Group2UserJoinResult>>();
+            returnCode.code = 200;
+            returnCode.message = "查询成功";
+            returnCode.data = group2Users;
             return returnCode;
         }
     }
