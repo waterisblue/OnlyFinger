@@ -26,7 +26,6 @@
               <el-menu-item index="1-2" @click="saveNavState('/datefind')"
                 >日期查询</el-menu-item
               >
-              <el-menu-item index="1-3">人员细查</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
           <el-submenu index="2">
@@ -34,8 +33,8 @@
               ><i class="el-icon-menu submenumargin"></i>任务自定义</template
             >
             <el-menu-item-group>
-              <el-menu-item index="2-1">查询</el-menu-item>
-              <el-menu-item index="2-2">其他</el-menu-item>
+              <el-menu-item index="2-1" @click="saveNavState('/taskfind')">查询</el-menu-item>
+              <el-menu-item index="2-2" @click="saveNavState('/taskother')">其他</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
           <el-submenu index="3">

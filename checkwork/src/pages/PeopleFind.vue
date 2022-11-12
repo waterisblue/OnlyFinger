@@ -1,11 +1,18 @@
 <template>
   <div class="page">
     <div class="header">
-      <el-input v-model="searchname"></el-input>
-      <el-button class="searchbtn" type="primary">查询</el-button>
+      <el-input v-model="searchName"></el-input>
+      <el-button class="searchbtn" type="primary" @click="searchPeopleByStr()"
+        >查询</el-button
+      >
     </div>
     <div class="body">
-      <el-table :data="userData" stripe style="width: 100%" v-loading="isLoadingUserTable">
+      <el-table
+        :data="userData"
+        stripe
+        style="width: 100%"
+        v-loading="isLoadingUserTable"
+      >
         <el-table-column prop="id" label="id" width="180"> </el-table-column>
         <el-table-column prop="username" label="姓名" width="180">
         </el-table-column>
@@ -24,13 +31,10 @@
         <el-table-column prop="desc" label="描述"> </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
-              >编辑</el-button
-            >
             <el-button
               size="mini"
               type="danger"
-              @click="handleDelete(scope.$index, scope.row)"
+              @click="peopleEdit(scope.$index, scope.row)"
               >删除</el-button
             >
           </template>
@@ -39,10 +43,6 @@
       <el-pagination background layout="prev, pager, next" :total="totalPage">
       </el-pagination>
     </div>
-    <!-- 增加框 -->
-    <el-dialog title="用户编辑" :visible.sync="userProfileEdit">
-      
-    </el-dialog>
   </div>
 </template>
 
@@ -77,7 +77,7 @@ export default {
   mounted() {
     this.getUserByPage(1, 10).then((res) => {
       this.userData = res.data;
-      this.isLoadingUserTable = false;  
+      this.isLoadingUserTable = false;
     });
     this.getUserCount().then((res) => {
       this.totalPage = res.data;
@@ -85,13 +85,13 @@ export default {
   },
   data() {
     return {
-      searchname: "",
+      searchName: "",
       userData: [],
       totalPage: 1000,
       searchData: [],
       pageStatus: "all",
       userProfileEdit: false,
-      isLoadingUserTable: true
+      isLoadingUserTable: true,
     };
   },
   methods: {
@@ -108,24 +108,72 @@ export default {
       let { data: userCount } = await this.$http.get("/user/User/getUserCount");
       return userCount;
     },
-  },
-  // 页码改变调用
-  groupSizeChange(currentPage) {
-    this.isLoadingGroup = true;
+    // 页码改变调用
+    groupSizeChange(currentPage) {
+      this.isLoadingGroup = true;
 
-    if (this.pageStatus === "all") {
-      this.getUserByPage(currentPage, 10).then((res) => {
-        this.userData = res.data;
+      if (this.pageStatus === "all") {
+        this.getUserByPage(currentPage, 10).then((res) => {
+          this.userData = res.data;
+          this.isLoadingGroup = false;
+        });
+      } else if (this.pageStatus === "search") {
+        currentPage = currentPage - 1;
+        this.userData = this.searchData.slice(
+          currentPage * 10,
+          currentPage * 10 + 10
+        );
         this.isLoadingGroup = false;
-      });
-    } else if (this.pageStatus === "search") {
-      currentPage = currentPage - 1;
-      this.userData = this.searchData.slice(
-        currentPage * 10,
-        currentPage * 10 + 10
+      }
+    },
+    // 用户查询
+    async searchPeopleByStr() {
+      if (this.searchName === "") {
+        this.$notify({
+          title: "错误",
+          message: "查询不可为空",
+          type: "error",
+        });
+        this.isLoadingGroup = false;
+        return;
+      }
+      let { data: userList } = await this.$http.post(
+        "/user/User/searchUser",
+        null,
+        { params: { searchStr: this.searchName } }
       );
+      if (this.isLoadingGroup) {
+        return;
+      }
+      this.isLoadingGroup = true;
+
+      this.searchData = userList.data;
+      this.userData = userList.data.slice(0, 10);
+      this.totalPage = userList.data.length;
+      this.pageStatus = "search";
+
       this.isLoadingGroup = false;
-    }
+    },
+    // TODO：用户删除
+    async peopleEdit(index, row) {
+      const isConfirm = await this.$confirm("是否删除“" + row.username + "”？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+
+      if(isConfirm != "confirm") return;
+      let {data:res} = await this.$http.post("/user/User/deleteUserById", null, {params: {userId: row.id}})
+      let type = "error"
+      if (res.code == 200) {
+        type = "success";
+        this.userData.splice(index, 1)
+      }
+      this.$message({
+        type: type,
+        message: res.message,
+      });
+    },
   },
 };
 </script>

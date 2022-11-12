@@ -19,7 +19,7 @@
         </member>
         <member name="M:OnlyFingerWeb.Controllers.GroupController.updateGroup(System.Int32,System.String,System.String)">
             <summary>
-            更新一个组（暂时只更新组名）
+            更新一个组
             </summary>
             <param name="groupId">需要修改的组id</param>
             <param name="groupName">要修改的组名</param>
@@ -59,14 +59,14 @@
             任务处理接口
             </summary>
         </member>
-        <member name="M:OnlyFingerWeb.Controllers.TaskController.addTask(System.String,System.Int64,System.Int64,System.Int32)">
+        <member name="M:OnlyFingerWeb.Controllers.TaskController.addTask(System.String,System.String,System.Int64,System.Int64)">
             <summary>
             增加一个任务
             </summary>
             <param name="taskName">任务名</param>
+            <param name="desc"></param>
             <param name="startTime">任务开始时间</param>
             <param name="endTime">任务结束时间</param>
-            <param name="group">任务的组</param>
             <returns></returns>
         </member>
         <member name="T:OnlyFingerWeb.Controllers.UserController">

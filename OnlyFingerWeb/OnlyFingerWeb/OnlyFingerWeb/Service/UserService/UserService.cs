@@ -65,5 +65,66 @@ namespace OnlyFingerWeb.Service.UserService
             returnCode.data = userEntities.First(); 
             return returnCode;
         }
+
+        public ReturnCode<List<UserEntity>> searchUser(string searchStr)
+        {
+            var returnCode = new ReturnCode<List<UserEntity>>();
+            var exp = Expressionable.Create<UserEntity>();
+
+            if (searchStr == null || searchStr.Equals(""))
+            {
+                returnCode.code = 500;
+                returnCode.message = "查询失败，不能输入空查询字符。";
+                returnCode.data = null;
+                return returnCode;
+            }
+
+            var userList = new List<UserEntity>();
+
+            exp.Or(it => it.username.Contains(searchStr));
+            exp.And(it => it.isDelete == false);
+
+            int parseId;
+
+            bool tryParseBool = int.TryParse(searchStr, out parseId);
+
+
+            if (tryParseBool)
+            {
+                exp.Or(it => it.id == parseId);
+            }
+            userList = Db.Queryable<UserEntity>().Where(exp.ToExpression()).ToList();
+
+
+            returnCode.code = 200;
+            returnCode.message = "查询成功。";
+            returnCode.data = userList;
+
+            return returnCode;
+        }
+
+        public ReturnCode<string> updateUserById(int userId, string userName, string desc, int gender)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ReturnCode<string> deleteUserById(int userId)
+        {
+            var returnCode = new ReturnCode<string>();
+            int ret = Db.Updateable<UserEntity>()
+                .SetColumns(it => it.isDelete == true)
+                .Where(it => it.id == userId)
+                .ExecuteCommand();
+            if (ret != 1)
+            {
+                returnCode.code = 304;
+                returnCode.message = "删除行数不唯一，请检查数据是否正确";
+                return returnCode;
+            }
+            returnCode.code = 200;
+            returnCode.message = "删除成功";
+            returnCode.data = "修改行数为" + ret;
+            return returnCode;
+        }
     }
 }

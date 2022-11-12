@@ -42,7 +42,7 @@ namespace OnlyFingerWeb.Service.GroupService
             ReturnCode<string> returnCode = new ReturnCode<string>();
 
             group.id = groupId;
-            int ret = Db.Updateable(group).UpdateColumns(it => new {it.groupName}).ExecuteCommand();
+            int ret = Db.Updateable(group).UpdateColumns(it => new {it.groupName, it.desc}).ExecuteCommand();
 
             if(ret != 1)
             {
@@ -62,12 +62,21 @@ namespace OnlyFingerWeb.Service.GroupService
                 .SetColumns(it => it.isDelete == true)
                 .Where(it => it.id == groupId)
                 .ExecuteCommand();
-            if(res != 1)
+
+            if (res != 1)
             {
                 returnCode.code = 500;
                 returnCode.message = "删除行数不唯一，删除行数：" + res;
                 return returnCode;
             }
+            Db.Updateable<Group2Task>()
+                .Where(it => it.groupId == groupId)
+                .SetColumns(it => it.isDelete == true)
+                .ExecuteCommand();
+            Db.Updateable<Group2User>()
+                .Where(it => it.groupid == groupId)
+                .SetColumns(it => it.isDelete == true)
+                .ExecuteCommand();
             returnCode.code = 200;
             returnCode.message = "删除成功";
             returnCode.data = 1 + "";
@@ -203,6 +212,25 @@ namespace OnlyFingerWeb.Service.GroupService
             returnCode.code = 200;
             returnCode.message = "查询成功";
             returnCode.data = group2Users;
+            return returnCode;
+        }
+
+        public ReturnCode<string> deleteGroup2UserById(int groupId, int userId)
+        {
+            var returnCode = new ReturnCode<string>();
+            int ret = Db.Updateable<Group2User>()
+                .SetColumns(it => it.isDelete == true)
+                .Where(it => it.groupid == groupId && it.userid == userId)
+                .ExecuteCommand();
+            if(ret != 1)
+            {
+                returnCode.code = 304;
+                returnCode.message = "删除行数不唯一，请检查数据是否正确";
+                return returnCode;
+            }
+            returnCode.code = 200;
+            returnCode.message = "删除成功";
+            returnCode.data = "修改行数为" + ret;
             return returnCode;
         }
     }

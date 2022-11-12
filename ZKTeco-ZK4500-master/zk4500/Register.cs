@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AxZKFPEngXControl;
+using OnlyFingerWeb.Entity;
 using SqlSugar;
 
 namespace zk4500
@@ -18,6 +19,7 @@ namespace zk4500
         SqlSugarScope db = SqlSugarConnect.getConnect();
         bool Check;
         MyDBDao dbDao = new MyDBDao();
+        TaskEntity nowTask = null;
 
         public Register()
         {
@@ -68,7 +70,7 @@ namespace zk4500
                     if (ZkFprint.EnrollIndex - 1 > 0)
                     {
                         int eindex = ZkFprint.EnrollIndex - 1;
-                        strTemp = "Please scan again ..." + eindex;
+                        strTemp = "请再次扫描..." + eindex;
                     }
                 }
             }
@@ -84,16 +86,26 @@ namespace zk4500
                 string template = ZkFprint.EncodeTemplate1(e.aTemplate);
 
                 String name = nameinput.Text;
+                String desc = descInput.Text;
+                int gender = 0;
+                if (manRadio.Checked)
+                {
+                    gender = 1;
+                }
+                
                 UserDetail tempUser = new UserDetail();
-                tempUser.UserName = name;
+                tempUser.username = name;
                 tempUser.fingertemp = template;
+                tempUser.gender = gender;
+                tempUser.desc = desc;
+                tempUser.createdate = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeMilliseconds();
                 int insertable = dbDao.registerUser(tempUser);
 
                 showPrompt(insertable + "");
             }
             else
             {
-                showPrompt("Error, please register again.");
+                showPrompt("错误，请重新注册");
 
             }
         }
@@ -108,7 +120,7 @@ namespace zk4500
             ZkFprint.CancelEnroll();
             ZkFprint.EnrollCount = 3;
             ZkFprint.BeginEnroll();
-            showPrompt("Please give fingerprint sample.");
+            showPrompt("请将手指放在指纹机上");
         }
 
         private void showPrompt(String prom)
@@ -118,6 +130,15 @@ namespace zk4500
 
         private void verify_Click(object sender, EventArgs e)
         {
+            var listTask = dbDao.getTask(int.Parse(taskId.Text));
+            if(listTask.Count == 0)
+            {
+                showPrompt("此任务未开始或已经结束");
+                return;
+            }
+            nowTask = listTask[0];
+            showPrompt("当前正在进行 “" + nowTask.taskName + "” 任务的签到");
+            
             ZkFprint.CancelEnroll();
             ZkFprint.OnCapture += zkFprint_OnCapture;
             ZkFprint.BeginCapture();
@@ -134,13 +155,39 @@ namespace zk4500
                 bool check = ZkFprint.VerFingerFromStr(ref template, ud.fingertemp, false, ref Check);
                 if (check)
                 {
-                    showPrompt(ud.UserName);
+                    string ret = dbDao.sign(nowTask.id, ud.Id);
+                    showPrompt(ret);
                 }
             }
             if (prompt.Text.Equals(""))
             {
                 showPrompt("没有找到结果");
             }
+        }
+
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void nameinput_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -37,7 +37,7 @@ namespace OnlyFingerWeb.Controllers
         }
 
         /// <summary>
-        /// 更新一个组（暂时只更新组名）
+        /// 更新一个组
         /// </summary>
         /// <param name="groupId">需要修改的组id</param>
         /// <param name="groupName">要修改的组名</param>
@@ -113,6 +113,13 @@ namespace OnlyFingerWeb.Controllers
         public string getUserByGroupId(int groupId)
         {
             var returnCode = groupService.getUserByGroupId(groupId);
+            return JsonConvert.SerializeObject(returnCode);
+        }
+
+        [HttpPost("deleteGroup2UserById")]
+        public string deleteGroup2UserById(int groupId, int userId)
+        {
+            var returnCode = groupService.deleteGroup2UserById(groupId, userId);
             return JsonConvert.SerializeObject(returnCode);
         }
 

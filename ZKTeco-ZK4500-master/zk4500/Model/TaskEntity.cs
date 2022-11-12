@@ -7,12 +7,12 @@ namespace OnlyFingerWeb.Entity
     {
         [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
         public int id { get; set; }
-        public string? taskName { get; set; }
+        public string taskName { get; set; }
         public long startTime { get; set; }
         public long endTime { get; set; }
-        public string? desc { get; set; }
+        public string desc { get; set; }
         public bool isDelete { get; set; }
-        public TaskEntity(string? taskName, long startTime, long endTime, bool isDelete, string? desc)
+        public TaskEntity(string taskName, long startTime, long endTime, bool isDelete, string desc)
         {
             this.taskName = taskName;
             this.startTime = startTime;

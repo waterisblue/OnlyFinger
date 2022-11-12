@@ -6,8 +6,11 @@
         <div class="workselect numtext">
           当前任务：
           <el-select
+            filterable
+            remote
             v-model="checkTask"
             placeholder="请选择"
+            :remote-method="remoteTaskList"
             @change="taskChange"
           >
             <el-option
@@ -19,8 +22,8 @@
             </el-option>
           </el-select>
         </div>
-        <div class="numtext">当前已参与人数：{{ signCount }}</div>
-        <div class="numtext">当前未参与人数：{{ allCount - signCount }}</div>
+        <div class="numtext">该任务已参与人数：{{ signCount }}</div>
+        <div class="numtext">该任务未参与人数：{{ allCount - signCount }}</div>
         <div class="numtext">全部人数：{{ allCount }}</div>
       </el-card>
       <div class="refreshbtn">
@@ -35,7 +38,12 @@
     <div class="lowerhalf">
       <div class="realtimetable">
         <el-table :data="tableData">
-          <el-table-column prop="signtime" :formatter="this.$transform.transformDate" label="时间" width="180">
+          <el-table-column
+            prop="signtime"
+            :formatter="this.$transform.transformDate"
+            label="时间"
+            width="180"
+          >
           </el-table-column>
           <el-table-column prop="username" label="姓名" width="180">
           </el-table-column>
@@ -127,7 +135,7 @@ export default {
       checkTask: "",
       allCount: "",
       signCount: "",
-      checkTaskName: ""
+      checkTaskName: "",
     };
   },
   methods: {
@@ -258,10 +266,17 @@ export default {
         null,
         { params: { taskId: this.checkTask } }
       );
-      
-      listData.data.map(x => x.taskname = this.options.filter(x => x.id == taskId)[0].taskName)
-      this.tableData = listData.data
+
+      listData.data.map(
+        (x) =>
+          (x.taskname = this.options.filter((x) => x.id == taskId)[0].taskName)
+      );
+      this.tableData = listData.data;
     },
+    async remoteTaskList(query){
+        const {data:res} = await this.$http.post("task/Task/getTasksBySearch", null, {params: {searchStr: query}})
+        this.options = res.data
+    }
   },
 };
 </script>

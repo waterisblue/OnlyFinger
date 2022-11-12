@@ -31,6 +31,8 @@ import DashBroad from '../pages/DashBroad'
 import DateFind from '../pages/DateFind'
 import PeopleFind from '../pages/PeopleFind'
 import GroupHandle from '../pages/GroupHandle'
+import TaskFind from '../pages/TaskFind'
+import TaskOther from '../pages/TaskOther'
 
 const routes = [
   {
@@ -41,6 +43,8 @@ const routes = [
       {path: '/datefind', component: DateFind},
       {path: '/peoplefind', component: PeopleFind},
       {path: '/grouphandle', component: GroupHandle},
+      {path: '/taskfind', component: TaskFind},
+      {path: 'taskother', component: TaskOther}
     ]
   },
   {

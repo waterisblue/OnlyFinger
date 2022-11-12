@@ -102,7 +102,10 @@
       </el-row>
       <el-row type="flex">
         <el-col :span="1" offset="18">
-          <el-button type="success" v-if="!editGroupInputDisable"
+          <el-button
+            type="success"
+            v-if="!editGroupInputDisable"
+            @click="updateGroupData"
             >确定</el-button
           >
         </el-col>
@@ -124,7 +127,8 @@
             border
             style="width: 100%"
           >
-            <el-table-column prop="userid" label="id" width="80"> </el-table-column>
+            <el-table-column prop="userid" label="id" width="80">
+            </el-table-column>
             <el-table-column prop="username" label="姓名" width="180">
             </el-table-column>
             <el-table-column
@@ -133,13 +137,17 @@
               :formatter="this.$transform.transformGender"
               width="100"
             ></el-table-column>
-            <el-table-column prop="createtime" label="加入时间" :formatter="this.$transform.transformDate"></el-table-column>
+            <el-table-column
+              prop="createtime"
+              label="加入时间"
+              :formatter="this.$transform.transformDate"
+            ></el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">
                 <el-button
                   size="mini"
                   type="danger"
-                  @click="groupHandleEdit(scope.$index, scope.row)"
+                  @click="deleteGroupPeople(scope.$index, scope.row)"
                   >删除</el-button
                 >
               </template>
@@ -272,6 +280,8 @@ export default {
           message: res.message,
           type: "error",
         });
+        this.addGroupFormVisible = false
+        return
       }
       this.$notify({
         title: "添加成功",
@@ -350,9 +360,9 @@ export default {
               type: "error",
               message: res.message,
             });
-            return
+            return;
           }
-          this.editUser2GroupData = resData.data
+          this.editUser2GroupData = resData.data;
         });
       this.editGroupFromVisible = true;
     },
@@ -419,17 +429,60 @@ export default {
                   if (resData.code != 200) {
                     this.$message({
                       type: "error",
-                      message: res.data.message,
+                      message: resData.message,
                     });
                     return;
                   }
                   this.$message({
                     type: "success",
-                    message: res.data.message,
+                    message: resData.message,
                   });
                 });
+                this.editGroupFromVisible = false
             });
           });
+      });
+      
+    },
+    async updateGroupData() {
+      const { data: updateData } = await this.$http.post(
+        "/group/Group/updateGroup",
+        null,
+        {
+          params: {
+            groupId: this.editGroupData.id,
+            groupName: this.editGroupData.groupName,
+            desc: this.editGroupData.desc,
+          },
+        }
+      );
+      let type = "success";
+      if (updateData.code != 200) {
+        type = "error";
+      }
+      this.$message({
+        type: type,
+        message: updateData.message,
+      });
+      this.editGroupFromVisible = false;
+    },
+    async deleteGroupPeople(index, row) {
+      const isConfirm = await this.$confirm("是否从该组中删除用户")
+      if(isConfirm != "confirm") return;
+      const { data: deleteStr } = await this.$http.post(
+        "/group/Group/deleteGroup2UserById",
+        null,
+        { params: { groupId: this.editGroupData.id, userId: row.id } }
+      );
+      
+      let type = "error"
+      if (deleteStr.code == 200) {
+        this.editUser2GroupData.splice(index, 1)
+        type = "success";
+      }
+      this.$message({
+        type: type,
+        message: deleteStr.message,
       });
     },
   },

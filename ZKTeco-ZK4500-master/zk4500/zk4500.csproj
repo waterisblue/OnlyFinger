@@ -103,6 +103,11 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\Group2Task.cs" />
+    <Compile Include="Model\Group2User.cs" />
+    <Compile Include="Model\GroupEntity.cs" />
+    <Compile Include="Model\Sign.cs" />
+    <Compile Include="Model\TaskEntity.cs" />
     <Compile Include="MyDBDao.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -113,7 +118,13 @@
       <DependentUpon>Register.cs</DependentUpon>
     </Compile>
     <Compile Include="SqlSugarConnect.cs" />
-    <Compile Include="UserDetail.cs" />
+    <Compile Include="Model\UserDetail.cs" />
+    <Compile Include="Verify.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Verify.Designer.cs">
+      <DependentUpon>Verify.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -129,6 +140,9 @@
     </Compile>
     <EmbeddedResource Include="Register.resx">
       <DependentUpon>Register.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Verify.resx">
+      <DependentUpon>Verify.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

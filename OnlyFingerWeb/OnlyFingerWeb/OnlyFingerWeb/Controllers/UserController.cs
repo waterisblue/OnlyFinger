@@ -46,6 +46,19 @@ namespace OnlyFingerWeb.Controllers
         public string getUserById(int userId)
         {
             var returnCode = userService.getUserById(userId);
+            return JsonConvert.SerializeObject(returnCode); 
+        }
+
+        [HttpPost("searchUser")]
+        public string searchUser(string searchStr)
+        {
+            var returnCode = userService.searchUser(searchStr);
+            return JsonConvert.SerializeObject(returnCode);
+        }
+        [HttpPost("deleteUserById")]
+        public string deleteUserById(int userId)
+        {
+            var returnCode = userService.deleteUserById(userId);
             return JsonConvert.SerializeObject(returnCode);
         }
     }
