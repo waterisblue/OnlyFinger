@@ -33,5 +33,12 @@ namespace OnlyFingerWeb.Controllers
             var returnCode = dataAnalyService.getSignUser(taskId);
             return JsonConvert.SerializeObject(returnCode);
         }
+
+        [HttpPost("getTimeAnaly")]
+        public string getTimeAnaly(long starttime, long endtime)
+        {
+            var returnCode = dataAnalyService.getTimeAnaly(starttime, endtime);
+            return JsonConvert.SerializeObject(returnCode);
+        }
     }
 }

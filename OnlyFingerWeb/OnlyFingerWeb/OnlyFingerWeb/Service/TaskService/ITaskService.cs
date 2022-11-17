@@ -11,5 +11,6 @@ namespace OnlyFingerWeb.Service.TaskService
         ReturnCode<string> updateTask(int taskId, string taskName, string desc);
         ReturnCode<int> addGroupToTask(int groupId, int taskId);
         ReturnCode<List<TaskEntity>> getTasksBySearch(string searchStr);
+        ReturnCode<List<TaskEntity>> getCurrentTask();
     }
 }

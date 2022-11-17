@@ -1,4 +1,5 @@
 ﻿using Furion.DependencyInjection;
+using Newtonsoft.Json;
 using OnlyFingerWeb.Entity;
 using OnlyFingerWeb.Model;
 using SqlSugar;
@@ -58,6 +59,69 @@ namespace OnlyFingerWeb.Service.DataAnalyService
             return returnCode;
 
 
+        }
+
+        public ReturnCode<Dictionary<string, string>> getTimeAnaly(long starttime, long endtime)
+        {
+            var returnCode = new ReturnCode<Dictionary<string, string>>();
+            var dictionary = new Dictionary<string, string>();
+
+            var piedata = Db.Queryable<Sign>()
+                .Where(it => it.signtime >= starttime && it.signtime <= endtime)
+                .LeftJoin<UserEntity>((s, ue) => s.userid == ue.id)
+                .GroupBy((s, ue) => new { ue.id, ue.username})
+                .Select((s, ue) => new
+                {
+                    id = ue.id,
+                    username = ue.username,
+                    sum = SqlFunc.AggregateCount(s.id)
+                })
+                .MergeTable()
+                .OrderBy(it => it.sum, OrderByType.Desc)
+                .ToList();
+
+            dictionary.Add("piedata", JsonConvert.SerializeObject(piedata));
+
+            var pie2data = Db.Queryable<Sign>()
+                .Where(it => it.signtime >= starttime && it.signtime <= endtime)
+                .LeftJoin<TaskEntity>((s, te) => s.taskid == te.id)
+                .GroupBy((s, te) => new { te.id, te.taskName })
+                .Select((s, te) => new
+                {
+                    id = te.id,
+                    taskname = te.taskName,
+                    sum = SqlFunc.AggregateCount(s.id)
+                })
+                .MergeTable()
+                .OrderBy(it => it.sum, OrderByType.Desc)
+                .ToList();
+
+            dictionary.Add("pie2data", JsonConvert.SerializeObject(pie2data));
+
+            var taskId = Db.Queryable<Sign>()
+                .Where(it => it.signtime >= starttime && it.signtime <= endtime)
+                .Select(it => it.taskid)
+                .Distinct()
+                .ToList();
+
+            var allCount = Db.Queryable<Group2Task>()
+                .Where(it => taskId.Contains(it.taskId))
+                .LeftJoin<GroupEntity>((gt, ge) => gt.groupId == ge.id)
+                .Sum((gt, ge) => ge.memberCount);
+
+            var signCount = Db.Queryable<Sign>()
+                .Where(it => it.signtime >= starttime && it.signtime <= endtime)
+                .Count();
+
+            dictionary.Add("allCount", allCount + "");
+            dictionary.Add("signCount", signCount + "");
+
+
+
+            returnCode.code = 200;
+            returnCode.message = "查询成功";
+            returnCode.data = dictionary;
+            return returnCode;
         }
     }
 }

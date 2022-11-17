@@ -115,6 +115,19 @@ namespace OnlyFingerWeb.Service.UserService
                 .SetColumns(it => it.isDelete == true)
                 .Where(it => it.id == userId)
                 .ExecuteCommand();
+            var groupList = Db.Queryable<Group2User>()
+                .Where(it => it.userid == userId)
+                .Select(it => it.groupid)
+                .ToList();
+            Db.Updateable<Group2User>()
+                .Where(it => it.userid == userId)
+                .SetColumns(it => it.isDelete == true)
+                .ExecuteCommand();
+            Db.Updateable<GroupEntity>()
+                .SetColumns(it => it.memberCount == it.memberCount - 1)
+                .Where(it => groupList.Contains(it.id))
+                .ExecuteCommand();
+                
             if (ret != 1)
             {
                 returnCode.code = 304;

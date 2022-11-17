@@ -77,6 +77,13 @@ namespace OnlyFingerWeb.Controllers
             var returnCode = taskService.getTasksBySearch(searchStr);
             return JsonConvert.SerializeObject(returnCode);
         }
+
+        [HttpPost("getCurrentTask")]
+        public string getCurrentTask()
+        {
+            var returnCode = taskService.getCurrentTask();
+            return JsonConvert.SerializeObject(returnCode);
+        }
     }
 
 }

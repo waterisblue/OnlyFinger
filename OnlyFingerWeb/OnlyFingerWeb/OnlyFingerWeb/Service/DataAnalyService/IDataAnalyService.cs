@@ -8,5 +8,6 @@ namespace OnlyFingerWeb.Service.DataAnalyService
         public ReturnCode<List<TaskEntity>> getCurrentTimeTask();
         public ReturnCode<Dictionary<string, int>> getGaugeData(int taskId);
         public ReturnCode<List<UserSign>> getSignUser(int taskId);
+        public ReturnCode<Dictionary<string, string>> getTimeAnaly(long starttime, long endtime);
     }
 }

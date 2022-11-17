@@ -11,6 +11,15 @@
     >
       <i class="el-icon-circle-plus"></i>增加任务
     </el-button>
+    <el-button
+      class="top"
+      type="success"
+      @click="
+        searchTaskDialogVisible = true
+      "
+    >
+      <i class="el-icon-search"></i>查询任务
+    </el-button>
     <div class="bottom">
       <el-button
         class="edittask"
@@ -191,6 +200,16 @@
         >
       </el-row>
     </el-dialog>
+    <el-dialog title="添加" :visible.sync="searchTaskDialogVisible" width="50%">
+      <el-table :data="searchTaskList" style="width: 100%">
+        <el-table-column prop="id" label="id" width="180">
+        </el-table-column>
+        <el-table-column prop="taskName" label="任务名" width="180">
+        </el-table-column>
+        <el-table-column prop="startTime" label="开始时间" :formatter="this.$transform.transformDate"> </el-table-column>
+        <el-table-column prop="endTime" label="结束时间" :formatter="this.$transform.transformDate"> </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
@@ -251,15 +270,23 @@ export default {
         time: [],
         desc: "",
       },
+      searchTaskList: [],
       editGroup2TaskData: [],
       addTaskDialogVisible: false,
       editTaskDialogVisible: false,
       removeTaskDialogVisible: false,
+      searchTaskDialogVisible: false,
       editTaskDetailVisible: false,
       removeTaskId: "",
       editTaskId: "",
       editTaskInputDisable: true,
     };
+  },
+  mounted(){
+    this.$http.post("/task/Task/getCurrentTask").then(res => {
+      this.searchTaskList = res.data.data
+      console.log(this.searchTaskList)
+    })
   },
   methods: {
     async addTaskFun() {

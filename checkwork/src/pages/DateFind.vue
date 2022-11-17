@@ -3,28 +3,30 @@
     <div class="header">
       <div class="datefindinput">
         <el-date-picker
-          v-model="value2"
-          type="daterange"
+          v-model="checktimes"
+          type="datetimerange"
           align="right"
           unlink-panels
           range-separator="-"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           :picker-options="pickerOptions"
+          :blur="timeChange"
         >
         </el-date-picker>
+        <el-button type="primary" plain round style="margin-left: 3rem" @click="init(checktimes)">查询</el-button>
       </div>
     </div>
     <div class="body">
       <div class="upper">
         <el-card class="upcard">
-          <div class="numtext">时长共计：20h 13m 1s</div>
-          <div class="numtext">签到人数：30</div>
-          <div class="numtext">总人数：50</div>
+          <div class="numtext">时长共计：{{timeCount}}</div>
+          <div class="numtext">签到人数：{{signCount}}</div>
+          <div class="numtext">总人数：{{allCount}}</div>
         </el-card>
         <el-card class="upcard">
           <div class="numtext">
-            涉及任务：测试任务，核酸任务，6.1核酸任务，考试签到，6.1计组考试
+           涉及到的任务： {{taskStr}}
           </div>
         </el-card>
       </div>
@@ -84,9 +86,10 @@
 export default {
   name: "DateFind",
   mounted() {
-    this.getPieChart(1);
-    this.getBarChart(1);
-    this.getPieChart2(1);
+    const end = new Date();
+    const start = new Date();
+    start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+    this.init([start, end]);
   },
   data() {
     return {
@@ -121,16 +124,45 @@ export default {
           },
         ],
       },
-      value1: "",
-      value2: "",
+      checktimes: "",
+      allCount: 0,
+      signCount: 0,
+      taskStr: "",
+      timeCount: ""
     };
   },
   methods: {
+    async init(checkTimes){
+      const startTime = checkTimes[0].getTime()
+      const endTime = checkTimes[1].getTime()
+      const {data:res} = await this.$http.post("/dataanay/DataAnaly/getTimeAnaly", null, {params: {starttime: startTime, endtime: endTime}})
+      this.allCount = res.data.allCount
+      this.signCount = res.data.signCount
+      this.setDataAndTask(res.data.pie2data, endTime - startTime)
+      this.getPieChart([this.allCount, this.signCount])
+      this.getBarChart(JSON.parse(res.data.piedata))
+      this.getPieChart2(JSON.parse(res.data.pie2data))
+    },
+    setDataAndTask(pie2data, timeNum){
+      pie2data = JSON.parse(pie2data)
+      let taskStr = ""
+      for(let i = 0; i < pie2data.length; i++){
+        taskStr += pie2data[i].taskname + ", "
+      }
+      taskStr = taskStr.substring(0, taskStr.length - 2)
+      
+      this.taskStr = taskStr
+
+      let hour = parseInt(timeNum / 1000 / 60 / 60)
+      let minute = parseInt(timeNum / 1000 / 60 % 60)
+      let second = parseInt(timeNum / 1000 % 60 % 60)
+      this.timeCount = hour + "h " + minute + "m " + second + "s"
+    },
     // 获取饼图
     getPieChart(resData) {
       let data = [
-        { value: resData.signCount, name: "签到" },
-        { value: resData.allCount, name: "未签" },
+        { value: resData[1], name: "签到" },
+        { value: resData[0] - resData[1], name: "未签" },
       ];
       const piechart = this.$refs.piechart;
       if (piechart) {
@@ -144,10 +176,7 @@ export default {
               name: "Access From",
               type: "pie",
               radius: "50%",
-              data: [
-                { value: 30, name: "签到人数" },
-                { value: 20, name: "未签人数" },
-              ],
+              data: data,
               emphasis: {
                 itemStyle: {
                   shadowBlur: 10,
@@ -172,6 +201,12 @@ export default {
     },
     // 获取柱状图
     getBarChart(resData) {
+      let nameArr = []
+      let numArr = []
+      for(let i = 0; i < resData.length; i++){
+        nameArr.push(resData[i].username)
+        numArr.push(resData[i].sum)
+      }
       const barchart = this.$refs.barchart;
       if (barchart) {
         const myBarChart = this.$echarts.init(barchart);
@@ -191,7 +226,7 @@ export default {
           xAxis: [
             {
               type: "category",
-              data: ["高晨康", "郭晨", "张佳宁", "朱孟雨"],
+              data: nameArr,
               axisTick: {
                 alignWithLabel: true,
               },
@@ -207,7 +242,7 @@ export default {
               name: "Direct",
               type: "bar",
               barWidth: "60%",
-              data: [50, 30, 20, 14],
+              data: numArr,
             },
           ],
         };
@@ -225,6 +260,11 @@ export default {
     },
     // 获取饼图2
     getPieChart2(resData) {
+      let data = []
+      for(let i = 0; i < resData.length; i++){
+        data.push({ value: resData[i].sum, name: resData[i].taskname })
+      }
+
       const piechart2 = this.$refs.piechart2;
       if (piechart2) {
         const myPieChart = this.$echarts.init(piechart2);
@@ -257,13 +297,7 @@ export default {
               labelLine: {
                 show: false,
               },
-              data: [
-                { value: 1048, name: "Search Engine" },
-                { value: 735, name: "Direct" },
-                { value: 580, name: "Email" },
-                { value: 484, name: "Union Ads" },
-                { value: 300, name: "Video Ads" },
-              ],
+              data: data,
             },
           ],
         };

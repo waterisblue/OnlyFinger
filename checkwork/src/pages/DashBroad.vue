@@ -143,7 +143,7 @@ export default {
     getPieChart(resData) {
       let data = [
         { value: resData.signCount, name: "签到" },
-        { value: resData.allCount, name: "未签" },
+        { value: resData.allCount - resData.signCount, name: "未签" },
       ];
       const piechart = this.$refs.piechart;
       if (piechart) {

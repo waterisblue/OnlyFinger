@@ -211,5 +211,18 @@ namespace OnlyFingerWeb.Service.TaskService
 
             return returnCode;
         }
+
+        public ReturnCode<List<TaskEntity>> getCurrentTask()
+        {
+            var returnCode = new ReturnCode<List<TaskEntity>>();
+            long timestamp = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeMilliseconds();
+            var taskList = Db.Queryable<TaskEntity>()
+                .Where(it => it.startTime > timestamp)
+                .ToList();
+            returnCode.code = 200;
+            returnCode.message = "查询成功";
+            returnCode.data = taskList;
+            return returnCode;
+        }
     }
 }
